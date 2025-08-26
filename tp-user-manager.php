@@ -4,7 +4,7 @@
  * Plugin URI: trafficportal.com
  * Description: A plugin that provides shortcodes for user creation and signin with WordPress Users API integration.
  * Version: 1.0.0
- * Author: Cmaeron Fung
+ * Author: Cameron Fung
  * License: GPL v2 or later
  * Text Domain: tp-user-manager
  */
