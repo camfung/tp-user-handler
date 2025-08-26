@@ -36,10 +36,7 @@ class ShortcodeUserPlugin
     {
         add_action('init', array($this, 'register_shortcodes'));
         add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
-        add_action('wp_ajax_user_signup', array($this, 'handle_user_signup'));
-        add_action('wp_ajax_nopriv_user_signup', array($this, 'handle_user_signup'));
-        add_action('wp_ajax_user_signin', array($this, 'handle_user_signin'));
-        add_action('wp_ajax_nopriv_user_signin', array($this, 'handle_user_signin'));
+        dd_action('wp_login', array($this, 'send_user_data_on_login'), 10, 2);
     }
 
     public function register_shortcodes()
@@ -115,6 +112,47 @@ class ShortcodeUserPlugin
         </div>
         <?php
         return ob_get_clean();
+    }
+
+    /* 
+     * @param string $user_login The user's login username
+     * @param WP_User $user The WP_User object
+     */
+    public function send_user_data_on_login($user_login, $user)
+    {
+        // Get the user ID
+        $user_id = $user->ID;
+
+        // Prepare the data to send
+        $data = array(
+            'uid' => $user_id,
+            'wpUserId' => $user_id
+        );
+
+        // API endpoint
+        $api_url = 'https://dev.trfc.link/users';
+
+        // Prepare the request arguments
+        $args = array(
+            'method' => 'PUT',
+            'headers' => array(
+                'Content-Type' => 'application/json',
+            ),
+            'body' => json_encode($data),
+            'timeout' => 30,
+        );
+
+        // Make the API request
+        $response = wp_remote_request($api_url, $args);
+
+        // Optional: Log the response for debugging
+        if (is_wp_error($response)) {
+            error_log('API request failed: ' . $response->get_error_message());
+        } else {
+            $response_code = wp_remote_retrieve_response_code($response);
+            $response_body = wp_remote_retrieve_body($response);
+            error_log("API request completed. Status: {$response_code}, Response: {$response_body}");
+        }
     }
 }
 
