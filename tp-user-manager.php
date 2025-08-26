@@ -36,7 +36,7 @@ class ShortcodeUserPlugin
     {
         add_action('init', array($this, 'register_shortcodes'));
         add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
-        dd_action('wp_login', array($this, 'send_user_data_on_login'), 10, 2);
+        add_action('wp_login', array($this, 'send_user_data_on_login'), 10, 2);
     }
 
     public function register_shortcodes()
