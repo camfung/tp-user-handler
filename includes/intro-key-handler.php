@@ -66,7 +66,7 @@ class TP_Intro_Key_Handler {
             'notes' => '',
             'tags' => '',
             'settings' => '',
-            'uid' => 125,
+            'uid' => $user_id,
             'tpTkn' => 'MkmFJGQJlCyAuFWkkIiG',
             'cache_content' => 0
         );
