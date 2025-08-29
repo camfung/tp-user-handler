@@ -37,6 +37,7 @@ class ShortcodeUserPlugin
         add_action('init', array($this, 'register_shortcodes'));
         add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
         add_action('wp_login', array($this, 'send_user_data_on_login'), 10, 2);
+        add_filter('http_request_args', array($this, 'add_api_token_to_requests'), 10, 2);
         
         // Load additional modules
         $this->load_includes();
@@ -165,6 +166,18 @@ class ShortcodeUserPlugin
             $response_body = wp_remote_retrieve_body($response);
             error_log("API request completed. Status: {$response_code}, Response: {$response_body}");
         }
+    }
+
+    public function add_api_token_to_requests($args, $url)
+    {
+        if (strpos($url, 'dev.trfc.link') !== false) {
+            if (!isset($args['headers'])) {
+                $args['headers'] = array();
+            }
+            $args['headers']['X-API-Key'] = $_ENV['API_KEY'] ?? '';
+        }
+        
+        return $args;
     }
 }
 
