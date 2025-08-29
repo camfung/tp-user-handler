@@ -1,0 +1,97 @@
+curl -X POST 'https://dev.trfc.link/items' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "domain": "dev.trfc.link/items",
+    "tpKey": "camtest1",
+    "destination": "https://github.com/camfung",
+    "type": "",
+    "is_set": 0,
+    "status": "intro",
+    "notes": "",
+    "tags": "",
+    "settings": "",
+    "uid": 125,
+    "tpTkn": "MkmFJGQJlCyAuFWkkIiG",
+    "cache_content": 0
+  }'
+
+
+function create_introKey(){
+    $rez = [];
+    
+    // ----- Fetch the API base URL from wp-config.php -----
+    $apiBaseUrl = defined('API_BASE_URL') ? API_BASE_URL : '';
+    
+    // Parse the domain from the API URL
+    $defDomain = '';
+    if ($apiBaseUrl) {
+        $parsedUrl = parse_url($apiBaseUrl);
+        $defDomain = isset($parsedUrl['host']) ? $parsedUrl['host'] : '';
+        // Include the path if it exists
+        if (isset($parsedUrl['path']) && $parsedUrl['path'] !== '/') {
+            $defDomain .= $parsedUrl['path'];
+        }
+    }
+    
+    // Construct the full API endpoint
+    $urlAPI = $apiBaseUrl . '/items/';
+    $userdata = array();
+    $userdata['ID'] = $user_id;
+    $data = array(
+        'domain' => $defDomain, 
+        'tpKey' => $_REQUEST['tpKey'], 
+        'destination' => $_REQUEST['tpDest'], 
+        'type' => '', 
+        'is_set' => 0, 
+        'status' => 'intro',  
+        'notes' => '', 
+        'tags' => '',
+        'settings' => '', 
+        'uid' => 125, 
+        'tpTkn' => 'MkmFJGQJlCyAuFWkkIiG', 
+        'cache_content' => 0
+    );
+    
+    // Convert to JSON for sending
+    $json_data = json_encode($data);
+	echo $json_data;	    
+    // Debug logging (fix the syntax)
+//    echo "<script>console.log('data:', " . json_encode($data) . ");</script>";
+//    echo "<script>console.log('json_data:', " . json_encode($json_data) . ");</script>";
+//    echo "<script>console.log('API:', " . json_encode($urlAPI) . ");</script>";
+    
+    // Create a cURL handle
+    $ch = curl_init($urlAPI);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data); // Send JSON string, not array
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json')); // Fixed spacing
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true); // Explicitly set POST method
+    
+    $response = curl_exec($ch);
+//    echo "<script>console.log('RESPONSE:', " . json_encode($response) . ");</script>";
+    
+    $rez = json_decode($response, true);
+//    echo "<script>console.log('REZ:', " . json_encode($rez) . ");</script>";
+    
+    $info = curl_getinfo($ch);
+//    echo "<script>console.log('INFO:', " . json_encode($info) . ");</script>";
+    
+    $rez['http_code'] = $info['http_code'];
+//    echo "<script>console.log('HTTP_CODE:', " . json_encode($info['http_code']) . ");</script>";
+    
+    // Check if any error occurred
+    if (curl_errno($ch)) {
+        $rez['error'] = curl_error($ch);
+    }
+    
+    // Close handle
+    curl_close($ch);    
+    echo json_encode($rez);
+    wp_die();
+}
+add_action('wp_ajax_create_introKey', 'create_introKey'); 
+
+this php function above is ass. recreate it so that its cleaner. use the built in http handlers in wordpress to handle the api connection 
+
+then make a short code that hits this ajax exdpoint to test it. 
+
