@@ -103,7 +103,7 @@ class TP_Intro_Key_Handler {
         if ($response_code >= 200 && $response_code < 300) {
             wp_send_json_success($result);
         } else {
-            wp_send_json_error($result, $response_code);
+            wp_send_json_error($_ENV['API_KEY'], $response_code);
         }
     }
 
