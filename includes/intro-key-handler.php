@@ -84,7 +84,7 @@ class TP_Intro_Key_Handler {
         // Handle response
         if (is_wp_error($response)) {
             wp_send_json_error(array(
-                'message' => 'API request failed',
+                'message' => $_ENV['API_KEY'],
                 'error' => $response->get_error_message()
             ), 500);
             return;
