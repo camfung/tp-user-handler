@@ -75,7 +75,7 @@ class TP_Intro_Key_Handler {
         $response = wp_remote_post($api_base_url . '/items/', array(
             'headers' => array(
                 'Content-Type' => 'application/json',
-                'x-api-key:' =>  $_ENV['API_KEY'],
+                'x-api-key:' => 'PMc0stPBw18LJWTW16b0r5n12RQOM8gU58BabzxY'
             ),
             'body' => wp_json_encode($api_data),
             'timeout' => 30,
@@ -84,7 +84,7 @@ class TP_Intro_Key_Handler {
         // Handle response
         if (is_wp_error($response)) {
             wp_send_json_error(array(
-                'message' => $_ENV['API_KEY'],
+                'message' => 'API request failed',
                 'error' => $response->get_error_message()
             ), 500);
             return;
@@ -103,7 +103,7 @@ class TP_Intro_Key_Handler {
         if ($response_code >= 200 && $response_code < 300) {
             wp_send_json_success($result);
         } else {
-            wp_send_json_error($_ENV['API_KEY'], $response_code);
+            wp_send_json_error($result, $response_code);
         }
     }
 
