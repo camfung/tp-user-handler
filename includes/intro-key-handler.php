@@ -75,7 +75,7 @@ class TP_Intro_Key_Handler {
         $response = wp_remote_post($api_base_url . '/items/', array(
             'headers' => array(
                 'Content-Type' => 'application/json',
-                'x-api-key:' => 'PMc0stPBw18LJWTW16b0r5n12RQOM8gU58BabzxY'
+                'x-api-key' => $_ENV['API_KEY'] ?? ''
             ),
             'body' => wp_json_encode($api_data),
             'timeout' => 30,
